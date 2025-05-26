@@ -1,0 +1,2782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WASLET - Connect Design Dreams</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #E91E63;
+            --secondary-color: #9C27B0;
+            --accent-color: #00BCD4;
+            --warning-color: #FF9800;
+            --success-color: #4CAF50;
+            --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            --border-radius: 20px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* Light mode colors */
+            --bg-color: #ffffff;
+            --text-color: #333333;
+            --card-bg: #ffffff;
+            --border-color: #e0e0e0;
+            --input-bg: #f8f9fa;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --card-bg: #2d2d2d;
+            --border-color: #404040;
+            --input-bg: #363636;
+            --background-gradient: linear-gradient(135deg, #2d3748 0%, #4a5568 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--background-gradient);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        .container {
+            max-width: 430px;
+            margin: 0 auto;
+            background: var(--bg-color);
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .screen {
+            display: none;
+            padding: 20px;
+            min-height: 100vh;
+            position: relative;
+            animation: slideIn 0.5s ease-out;
+            background: var(--bg-color);
+        }
+
+        .screen.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        /* Status Bar */
+        .status-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--input-bg);
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .status-left {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-right {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1001;
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            padding: 10px;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .logo {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 40px;
+            position: relative;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        .logo-circle {
+            width: 200px;
+            height: 200px;
+            border: 4px solid var(--secondary-color);
+            border-radius: 50%;
+            position: relative;
+            background: linear-gradient(45deg, rgba(156, 39, 176, 0.1), rgba(233, 30, 99, 0.1));
+        }
+
+        .logo-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--secondary-color);
+            letter-spacing: 2px;
+        }
+
+        .logo-tagline {
+            font-size: 12px;
+            color: var(--text-color);
+            margin-top: 5px;
+            letter-spacing: 1px;
+            opacity: 0.7;
+        }
+
+        .floating-circles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        .circle-1 {
+            width: 60px;
+            height: 60px;
+            background: var(--primary-color);
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .circle-2 {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            top: 60%;
+            right: 15%;
+            animation-delay: 1s;
+        }
+
+        .circle-3 {
+            width: 30px;
+            height: 30px;
+            background: var(--text-color);
+            bottom: 30%;
+            left: 20%;
+            animation-delay: 2s;
+        }
+
+        .get-started-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px 40px;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: var(--card-shadow);
+            margin-top: 40px;
+        }
+
+        .get-started-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(233, 30, 99, 0.3);
+        }
+
+        /* Form Styles */
+        .form-container {
+            padding: 40px 20px;
+        }
+
+        .form-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .form-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 10px;
+        }
+
+        .form-subtitle {
+            color: var(--text-color);
+            font-size: 14px;
+            opacity: 0.7;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 8px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 16px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            transition: var(--transition);
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background: var(--card-bg);
+            box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 20px;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: var(--card-shadow);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(233, 30, 99, 0.3);
+        }
+
+        /* Profile Screen */
+        .profile-header {
+            text-align: center;
+            padding: 40px 20px 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border-radius: 0 0 30px 30px;
+            margin: -20px -20px 30px -20px;
+        }
+
+        .profile-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid white;
+            margin-bottom: 16px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .profile-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            display: inline-block;
+            margin-bottom: 16px;
+        }
+
+        .profile-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .profile-btn {
+            padding: 8px 20px;
+            border: 2px solid white;
+            background: transparent;
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .profile-btn:hover {
+            background: white;
+            color: var(--primary-color);
+        }
+
+        .profile-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin: 30px 0;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
+        .stat-label {
+            font-size: 10px;
+            color: var(--text-color);
+            margin-top: 4px;
+            opacity: 0.7;
+        }
+
+        .profile-section {
+            background: var(--card-bg);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-color);
+        }
+
+        .skill-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .skill-tag {
+            background: var(--accent-color);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Opportunities Screen */
+        .opportunities-header {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .ai-badge {
+            background: var(--accent-color);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .opportunity-card {
+            background: var(--card-bg);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+            border: 1px solid var(--border-color);
+        }
+
+        .opportunity-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .match-percentage {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: var(--success-color);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+        }
+
+        .match-percentage.medium-match {
+            background: var(--warning-color);
+        }
+
+        .match-percentage.low-match {
+            background: #666;
+        }
+
+        .opportunity-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .opportunity-content {
+            padding: 20px;
+        }
+
+        .opportunity-company {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .opportunity-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: var(--text-color);
+        }
+
+        .opportunity-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: var(--text-color);
+            opacity: 0.7;
+            flex-wrap: wrap;
+        }
+
+        .opportunity-meta i {
+            margin-right: 4px;
+        }
+
+        .salary-range {
+            background: var(--success-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .remote-badge, .urgent-badge, .trending-badge {
+            background: var(--accent-color);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+
+        .urgent-badge {
+            background: var(--warning-color);
+        }
+
+        .trending-badge {
+            background: var(--primary-color);
+        }
+
+        .opportunity-description {
+            color: var(--text-color);
+            font-size: 14px;
+            line-height: 1.5;
+            margin-bottom: 16px;
+            opacity: 0.8;
+        }
+
+        .opportunity-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .opportunity-tag {
+            background: var(--input-bg);
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+
+        .ai-match-details {
+            background: rgba(0, 188, 212, 0.1);
+            padding: 8px 12px;
+            border-radius: 8px;
+            margin-top: 12px;
+        }
+
+        .ai-match-details small {
+            color: var(--accent-color);
+            font-size: 12px;
+        }
+
+        /* Details Screen */
+        .details-header {
+            position: relative;
+            margin: -20px -20px 20px -20px;
+        }
+
+        .details-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 18px;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: rgba(0,0,0,0.7);
+        }
+
+        .details-content {
+            padding: 0 20px;
+        }
+
+        .details-company {
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 16px;
+            margin-bottom: 8px;
+        }
+
+        .details-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-color);
+        }
+
+        .details-meta {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .meta-item {
+            background: var(--card-bg);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        .meta-label {
+            font-size: 12px;
+            color: var(--text-color);
+            opacity: 0.7;
+            margin-bottom: 4px;
+        }
+
+        .meta-value {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .details-section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .requirements-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .requirements-list li {
+            padding: 8px 0;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+            padding-left: 24px;
+        }
+
+        .requirements-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success-color);
+            font-weight: bold;
+        }
+
+        .requirements-list li:last-child {
+            border-bottom: none;
+        }
+
+        .apply-btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 16px;
+            width: 100%;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            margin: 20px 0;
+        }
+
+        .apply-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(233, 30, 99, 0.3);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: var(--card-bg);
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        .nav-item:hover {
+            background: var(--input-bg);
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* Search and Filter */
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            background: var(--input-bg);
+            color: var(--text-color);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .filter-tag {
+            background: var(--card-bg);
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-tag.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            z-index: 2000;
+            animation: slideDown 0.3s ease-out;
+            max-width: 90%;
+        }
+
+        .toast.error {
+            background: #f44336;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--border-color);
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 430px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .details-meta {
+                grid-template-columns: 1fr;
+            }
+        }
+
+
+                /* Match Screen */
+                .match-screen {
+            background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+            color: white;
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .match-header {
+            margin-bottom: 40px;
+        }
+
+        .match-title {
+            font-size: 32px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            animation: pulse 2s infinite;
+        }
+
+        .match-subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+
+        .match-companies {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .match-company {
+            background: rgba(255,255,255,0.95);
+            color: #333;
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--card-shadow);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        .company-image {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .company-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .company-description {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+        }
+
+        /* Planner Screen */
+        .planner-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .planner-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .planner-images {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .planner-image {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .planner-quote {
+            font-style: italic;
+            color: #666;
+            margin: 20px 0;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        .nav-item:hover {
+            background: #f8f9fa;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* Search and Filter */
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            background: #f8f9fa;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .filter-tag {
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-tag.active {
+            background: var(--primary-color);
+            color: white;
+        }
+        /* Planner Screen */
+        .planner-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .planner-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: var(--card-shadow);
+        }
+
+        .planner-images {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .planner-image {
+            width: 100%;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .planner-quote {
+            font-style: italic;
+            color: #666;
+            margin: 20px 0;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 430px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0;
+            z-index: 1000;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            transition: var(--transition);
+            padding: 8px;
+            border-radius: 12px;
+        }
+
+        .nav-item:hover {
+            background: #f8f9fa;
+        }
+
+        .nav-item.active {
+            color: var(--primary-color);
+        }
+
+        .nav-item i {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .nav-item span {
+            font-size: 10px;
+            font-weight: 500;
+        }
+
+        /* Search and Filter */
+        .search-container {
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 50px 16px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            background: #f8f9fa;
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        .filter-tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            overflow-x: auto;
+            padding-bottom: 8px;
+        }
+
+        .filter-tag {
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-tag.active {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 430px) {
+            .container {
+                margin: 0;
+                border-radius: 0;
+            }
+            
+            .profile-stats {
+                grid-template-columns: 1fr;
+            }
+            
+            .planner-images {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 200px;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--success-color);
+            color: white;
+            padding: 12px 24px;
+            border-radius: var(--border-radius);
+            z-index: 2000;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translate(-50%, -20px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon" id="theme-icon"></i>
+    </div>
+
+    <div class="container">
+        <!-- Status Bar -->
+        <div class="status-bar">
+            <div class="status-left">
+                <span>9:41</span>
+            </div>
+            <div class="status-right">
+                <i class="fas fa-signal"></i>
+                <i class="fas fa-wifi"></i>
+                <i class="fas fa-battery-three-quarters"></i>
+            </div>
+        </div>
+
+        <!-- Welcome Screen -->
+        <div class="screen active" id="welcome-screen">
+            <div class="welcome-screen">
+                <div class="floating-circles">
+                    <div class="circle circle-1"></div>
+                    <div class="circle circle-2"></div>
+                    <div class="circle circle-3"></div>
+                </div>
+                <div class="logo">
+                    <div class="logo-circle">
+                        <div class="logo-text">
+                            WASLET
+                            <div class="logo-tagline">CONNECTING DESIGN DREAMS</div>
+                        </div>
+                    </div>
+                </div>
+                <button class="get-started-btn" onclick="showScreen('login-screen')">
+                    Get Started
+                </button>
+            </div>
+        </div>
+
+        <!-- Login Screen -->
+        <div class="screen" id="login-screen">
+            <div class="form-container">
+                <div class="form-header">
+                    <h1 class="form-title">Welcome Back</h1>
+                    <p class="form-subtitle">Sign in to continue your design journey</p>
+                </div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email" class="form-control" placeholder="your@email.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign In</button>
+                </form>
+                
+                <p style="text-align: center; margin-top: 20px; opacity: 0.7;">
+                    Don't have an account? 
+                    <a href="#" onclick="showScreen('signup-screen')" style="color: var(--primary-color); text-decoration: none;">Sign up</a>
+                </p>
+            </div>
+        </div>
+
+        <!-- Signup Screen -->
+        <div class="screen" id="signup-screen">
+            <div class="form-container">
+                <div class="form-header">
+                    <h1 class="form-title">Create New Account</h1>
+                    <p class="form-subtitle">Already Registered? <a href="#" onclick="showScreen('login-screen')" style="color: var(--primary-color);">Log in here</a></p>
+                </div>
+                
+                <form id="signupForm">
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" id="name" class="form-control" placeholder="Zara Marine" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email</label>
+                        <input type="email" id="signupEmail" class="form-control" placeholder="hello@reallygreatsite.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <input type="password" id="signupPassword" class="form-control" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="dob">Date of Birth</label>
+                        <input type="date" id="dob" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Sign up</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Profile Screen -->
+        <div class="screen" id="profile-screen">
+            <div class="profile-header">
+                <img src="https://media.istockphoto.com/id/1398385367/photo/happy-millennial-business-woman-in-glasses-posing-with-hands-folded.jpg?s=612x612&w=0&k=20&c=Wd2vTDd6tJ5SeEY-aw0WL0bew8TAkyUGVvNQRj3oJFw=">
+                <h2 class="profile-name">NORA</h2>
+                <div class="profile-badge">Undergraduate Interior Design</div>
+                <div class="profile-actions">
+                    <button class="profile-btn">EDIT</button>
+                    <button class="profile-btn">PORTFOLIO</button>
+                    <button class="profile-btn">SHARE</button>
+                </div>
+            </div>
+
+            <div class="profile-stats">
+                <div class="stat-card">
+                    <div class="stat-number">12</div>
+                    <div class="stat-label">Applications</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">5</div>
+                    <div class="stat-label">Matches</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3</div>
+                    <div class="stat-label">Interviews</div>
+                </div>
+            </div>
+
+            <div class="profile-section">
+                <h3 class="section-title">About</h3>
+                <p>Hi, I am an undergraduate Interior Design student at the American University of Beirut (AUB), with extensive Comprehensive Interior (AI) and Design expertise in both residential and commercial projects. I have developed strong skills in space planning, concept development, and design communication through my academic background includes coursework in Interior Design Studio, Furniture & Finishes, Lighting Design.</p>
+            </div>
+
+            <div class="profile-section">
+                <h3 class="section-title">Skills</h3>
+                <div class="skill-tags">
+                    <span class="skill-tag">AutoCAD</span>
+                    <span class="skill-tag">3D Modeling</span>
+                    <span class="skill-tag">SketchUp</span>
+                    <span class="skill-tag">Photoshop</span>
+                    <span class="skill-tag">Space Planning</span>
+                    <span class="skill-tag">Color Theory</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Opportunities Screen -->
+        <div class="screen" id="opportunities-screen">
+            <div class="opportunities-header">
+                <h2 style="color: var(--primary-color); margin-bottom: 10px;">Recent Opportunities</h2>
+                <div class="ai-insights">
+                    <div class="ai-badge">
+                        <i class="fas fa-robot"></i>
+                        <span>AI-Powered Matching</span>
+                    </div>
+                </div>
+                <div class="search-container">
+                    <div class="search-box">
+                        <input type="text" class="search-input" placeholder="Search opportunities...">
+                        <button class="search-btn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <div class="filter-tags">
+                        <span class="filter-tag active">All</span>
+                        <span class="filter-tag">Internship</span>
+                        <span class="filter-tag">Full-time</span>
+                        <span class="filter-tag">Remote</span>
+                        <span class="filter-tag">Beirut</span>
+                        <span class="filter-tag">High Match</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="opportunity-card" onclick="showOpportunityDetails('Interior Designer')">
+                <div class="match-percentage high-match">
+                    <i class="fas fa-robot"></i>
+                    <span>94% Match</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=200&fit=crop" alt="Office" class="opportunity-image">
+                <div class="opportunity-content">
+                    <div class="opportunity-company">DESIGN STUDIO X</div>
+                    <h3 class="opportunity-title">We Are Hiring! Interior Designer</h3>
+                    <div class="opportunity-meta">
+                        <span><i class="fas fa-clock"></i> Full Time/Freelance</span>
+                        <span><i class="fas fa-calendar"></i> 3 months</span>
+                        <span><i class="fas fa-dollar-sign"></i> Paid</span>
+                        <span class="salary-range">$1,200-1,500</span>
+                    </div>
+                    <p class="opportunity-description">We're seeking a creative and detail-oriented Interior Designer to join our dynamic team. The ideal candidate should have experience in both residential and commercial projects...</p>
+                    <div class="opportunity-tags">
+                        <span class="opportunity-tag">AutoCAD</span>
+                        <span class="opportunity-tag">3D Modeling</span>
+                        <span class="opportunity-tag">Project Management</span>
+                    </div>
+                    <div class="ai-match-details">
+                        <small><i class="fas fa-lightbulb"></i> Perfect match for your AutoCAD and 3D modeling skills!</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="opportunity-card">
+                <div class="match-percentage medium-match">
+                    <i class="fas fa-robot"></i>
+                    <span>87% Match</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=200&fit=crop" alt="Modern Office" class="opportunity-image">
+                <div class="opportunity-content">
+                    <div class="opportunity-company">CREATIVE SPACES</div>
+                    <h3 class="opportunity-title">Junior Interior Designer Internship</h3>
+                    <div class="opportunity-meta">
+                        <span><i class="fas fa-clock"></i> Internship</span>
+                        <span><i class="fas fa-calendar"></i> 6 months</span>
+                        <span><i class="fas fa-map-marker-alt"></i> Beirut</span>
+                        <span class="salary-range">Unpaid + Certificate</span>
+                    </div>
+                    <p class="opportunity-description">Join our award-winning team and gain hands-on experience in residential interior design. Perfect opportunity for students looking to build their portfolio...</p>
+                    <div class="opportunity-tags">
+                        <span class="opportunity-tag">SketchUp</span>
+                        <span class="opportunity-tag">Photoshop</span>
+                        <span class="opportunity-tag">Client Relations</span>
+                    </div>
+                    <div class="ai-match-details">
+                        <small><i class="fas fa-lightbulb"></i> Great for building portfolio and SketchUp experience!</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="opportunity-card">
+                <div class="match-percentage medium-match">
+                    <i class="fas fa-robot"></i>
+                    <span>82% Match</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&h=200&fit=crop" alt="Design Studio" class="opportunity-image">
+                <div class="opportunity-content">
+                    <div class="opportunity-company">MODERN LIVING</div>
+                    <h3 class="opportunity-title">Space Planning Specialist</h3>
+                    <div class="opportunity-meta">
+                        <span><i class="fas fa-clock"></i> Part Time</span>
+                        <span><i class="fas fa-calendar"></i> 4 months</span>
+                        <span><i class="fas fa-dollar-sign"></i> $800/month</span>
+                        <span class="remote-badge">Remote Available</span>
+                    </div>
+                    <p class="opportunity-description">Focus on space optimization and layout design for residential projects. Great opportunity to develop technical skills in space planning and client consultation...</p>
+                    <div class="opportunity-tags">
+                        <span class="opportunity-tag">Space Planning</span>
+                        <span class="opportunity-tag">Technical Drawing</span>
+                        <span class="opportunity-tag">Revit</span>
+                    </div>
+                    <div class="ai-match-details">
+                        <small><i class="fas fa-lightbulb"></i> Matches your space planning interests and technical skills!</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="opportunity-card">
+                <div class="match-percentage low-match">
+                    <i class="fas fa-robot"></i>
+                    <span>73% Match</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=200&fit=crop" alt="Architecture Firm" class="opportunity-image">
+                <div class="opportunity-content">
+                    <div class="opportunity-company">URBAN ARCHITECTS</div>
+                    <h3 class="opportunity-title">Design Assistant</h3>
+                    <div class="opportunity-meta">
+                        <span><i class="fas fa-clock"></i> Contract</span>
+                        <span><i class="fas fa-calendar"></i> 2 months</span>
+                        <span><i class="fas fa-dollar-sign"></i> $600/month</span>
+                        <span class="urgent-badge">Urgent</span>
+                    </div>
+                    <p class="opportunity-description">Support senior designers with project documentation and client presentations. Entry-level position perfect for gaining industry experience...</p>
+                    <div class="opportunity-tags">
+                        <span class="opportunity-tag">Documentation</span>
+                        <span class="opportunity-tag">Presentations</span>
+                        <span class="opportunity-tag">Research</span>
+                    </div>
+                    <div class="ai-match-details">
+                        <small><i class="fas fa-lightbulb"></i> Good entry point, though less technical focus than your profile suggests.</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="opportunity-card">
+                <div class="match-percentage high-match">
+                    <i class="fas fa-robot"></i>
+                    <span>91% Match</span>
+                </div>
+                <img src="https://images.unsplash.com/photo-1497366811353-6870744d04b2?w=400&h=200&fit=crop" alt="Tech Company" class="opportunity-image">
+                <div class="opportunity-content">
+                    <div class="opportunity-company">TECH SPACES</div>
+                    <h3 class="opportunity-title">UX/UI Designer for Spaces</h3>
+                    <div class="opportunity-meta">
+                        <span><i class="fas fa-clock"></i> Full Time</span>
+                        <span><i class="fas fa-calendar"></i> Permanent</span>
+                        <span><i class="fas fa-dollar-sign"></i> $1,800/month</span>
+                        <span class="trending-badge">Trending</span>
+                    </div>
+                    <p class="opportunity-description">Innovative role combining interior design principles with digital interface design for smart spaces and IoT environments...</p>
+                    <div class="opportunity-tags">
+                        <span class="opportunity-tag">UI/UX</span>
+                        <span class="opportunity-tag">Smart Spaces</span>
+                        <span class="opportunity-tag">Innovation</span>
+                    </div>
+                    <div class="ai-match-details">
+                        <small><i class="fas fa-lightbulb"></i> Perfect blend of your design skills and modern tech trends!</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Match Screen -->
+        <div class="screen" id="match-screen">
+            <div class="match-screen">
+                <div class="match-header">
+                    <h1 class="match-title">New Match</h1>
+                    <p class="match-subtitle">READY FOR YOUR NEXT INTERNSHIP?</p>
+                </div>
+
+                <div class="match-companies">
+                    <div class="match-company">
+                        <img src="https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=400&h=150&fit=crop" alt="Company X" class="company-image">
+                        <h3 class="company-name">Company X</h3>
+                        <p class="company-description">Your request to under review of our HR will get back to you soon</p>
+                    </div>
+
+                    <div class="match-company">
+                        <img src="https://images.unsplash.com/photo-1560472354-b33ff0c44a43?w=400&h=150&fit=crop" alt="Company Y" class="company-image">
+                        <h3 class="company-name">Company Y</h3>
+                        <p class="company-description">Congratulation! You have an upcoming meeting So. Scheduled for tomorrow</p>
+                    </div>
+                </div>
+
+                <button class="btn btn-primary" onclick="showScreen('planner-screen')" style="background: white; color: var(--primary-color); margin-top: 30px;">
+                    View My Planner
+                </button>
+            </div>
+        </div>
+
+        <!-- Planner Screen -->
+        <div class="screen" id="planner-screen">
+            <div class="planner-header">
+                <h2 style="color: var(--primary-color);">Your planner</h2>
+                <p style="color: #666;">See what is planned just for you!</p>
+            </div>
+
+            <div class="planner-card">
+                <div style="background: var(--primary-color); color: white; padding: 12px 16px; border-radius: 12px; margin-bottom: 16px; font-weight: 600;">
+                    Company X
+                </div>
+                <div class="planner-images">
+                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=200&h=80&fit=crop" alt="Office Space" class="planner-image">
+                    <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=200&h=80&fit=crop" alt="Design Tools" class="planner-image">
+                </div>
+            </div>
+
+            <div class="planner-quote">
+                A thoughtful combination of design and function.
+            </div>
+
+            <button class="btn btn-primary">Accept</button>
+
+            <div style="margin-top: 40px;">
+                <h3 style="color: var(--primary-color); margin-bottom: 20px;">Upcoming Interviews</h3>
+                
+                <div class="planner-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h4 style="color: #333;">Creative Spaces Ltd.</h4>
+                        <span style="background: var(--success-color); color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px;">Confirmed</span>
+                    </div>
+                    <p style="color: #666; margin-bottom: 8px;"><i class="fas fa-calendar"></i> Tomorrow, 2:00 PM</p>
+                    <p style="color: #666; margin-bottom: 12px;"><i class="fas fa-map-marker-alt"></i> Beirut Digital District</p>
+                    <p style="color: #666; font-size: 14px;">Interview for Junior Interior Designer position. Bring your portfolio and be prepared to discuss your design philosophy.</p>
+                </div>
+
+                <div class="planner-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <h4 style="color: #333;">Modern Living Co.</h4>
+                        <span style="background: var(--warning-color); color: white; padding: 4px 8px; border-radius: 12px; font-size: 12px;">Pending</span>
+                    </div>
+                    <p style="color: #666; margin-bottom: 8px;"><i class="fas fa-calendar"></i> Friday, 10:00 AM</p>
+                    <p style="color: #666; margin-bottom: 12px;"><i class="fas fa-video"></i> Virtual Interview</p>
+                    <p style="color: #666; font-size: 14px;">Space Planning Specialist role. Technical interview focusing on AutoCAD and space optimization skills.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Application Details Screen -->
+        <div class="screen" id="details-screen">
+            <div style="padding: 20px;">
+                <button onclick="showScreen('opportunities-screen')" style="background: none; border: none; color: var(--primary-color); font-size: 18px; margin-bottom: 20px; cursor: pointer;">
+                    <i class="fas fa-arrow-left"></i> Back
+                </button>
+                
+                <div class="opportunity-card" style="margin-bottom: 0;">
+                    <img src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=200&fit=crop" alt="Office" class="opportunity-image">
+                    <div class="opportunity-content">
+                        <div class="opportunity-company">DESIGN STUDIO X</div>
+                        <h3 class="opportunity-title">Interior Designer Position</h3>
+                        <div class="opportunity-meta">
+                            <span><i class="fas fa-clock"></i> Full Time</span>
+                            <span><i class="fas fa-calendar"></i> 12 months</span>
+                            <span><i class="fas fa-dollar-sign"></i> $1,200-1,500</span>
+                        </div>
+                        
+                        <div style="margin: 24px 0;">
+                            <h4 style="color: #333; margin-bottom: 12px;">Job Description</h4>
+                            <p style="color: #666; line-height: 1.6;">We're seeking a creative and detail-oriented Interior Designer to join our dynamic team. The ideal candidate will have experience in both residential and commercial projects, with a strong understanding of design principles, space planning, and client relations.</p>
+                        </div>
+
+                        <div style="margin: 24px 0;">
+                            <h4 style="color: #333; margin-bottom: 12px;">Requirements</h4>
+                            <ul style="color: #666; padding-left: 20px; line-height: 1.8;">
+                                <li>Bachelor's degree in Interior Design or related field</li>
+                                <li>Proficiency in AutoCAD, SketchUp, and Adobe Creative Suite</li>
+                                <li>Strong portfolio showcasing residential and commercial projects</li>
+                                <li>Excellent communication and presentation skills</li>
+                                <li>Knowledge of building codes and regulations</li>
+                            </ul>
+                        </div>
+
+                        <div style="margin: 24px 0;">
+                            <h4 style="color: #333; margin-bottom: 12px;">What We Offer</h4>
+                            <ul style="color: #666; padding-left: 20px; line-height: 1.8;">
+                                <li>Competitive salary and benefits package</li>
+                                <li>Opportunity to work on diverse, exciting projects</li>
+                                <li>Professional development and training opportunities</li>
+                                <li>Collaborative and creative work environment</li>
+                                <li>Flexible working arrangements</li>
+                            </ul>
+                        </div>
+
+                        <div class="opportunity-tags" style="margin: 24px 0;">
+                            <span class="opportunity-tag">AutoCAD</span>
+                            <span class="opportunity-tag">SketchUp</span>
+                            <span class="opportunity-tag">3D Modeling</span>
+                            <span class="opportunity-tag">Project Management</span>
+                            <span class="opportunity-tag">Client Relations</span>
+                            <span class="opportunity-tag">Space Planning</span>
+                        </div>
+
+                        <button class="btn btn-primary" onclick="applyForJob()">
+                            Apply Now
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-item" onclick="showScreen('opportunities-screen')">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </div>
+            <div class="nav-item" onclick="showScreen('match-screen')">
+                <i class="fas fa-heart"></i>
+                <span>Matches</span>
+            </div>
+            <div class="nav-item" onclick="showScreen('planner-screen')">
+                <i class="fas fa-calendar"></i>
+                <span>Planner</span>
+            </div>
+            <div class="nav-item" onclick="showScreen('profile-screen')">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </div>
+            <div class="nav-item" onclick="showScreen('settings-screen')">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div class="screen" id="settings-screen">
+            <div style="padding: 20px; max-height: 100vh; overflow-y: auto;">
+                <h2 style="color: var(--primary-color); margin-bottom: 30px; text-align: center; font-weight: 600;">Settings</h2>
+                
+                <div class="profile-section">
+                    <h3 class="section-title"><i class="fas fa-user-cog" style="margin-right: 8px;"></i>Account Settings</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-user-edit"></i>
+                            <span>Edit Profile</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-lock"></i>
+                            <span>Change Password</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-shield-alt"></i>
+                            <span>Privacy Settings</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-download"></i>
+                            <span>Download My Data</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h3 class="section-title"><i class="fas fa-robot" style="margin-right: 8px; color: #4CAF50;"></i>AI & Smart Matching</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-brain"></i>
+                            <span>AI Recommendations</span>
+                            <small style="display: block; color: #666; margin-top: 2px;">Get personalized job suggestions</small>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="aiRecommendations" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-chart-line"></i>
+                            <span>Smart Matching Algorithm</span>
+                            <small style="display: block; color: #666; margin-top: 2px;">Advanced compatibility scoring</small>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="smartMatching" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-percentage"></i>
+                            <span>Show Match Percentages</span>
+                            <small style="display: block; color: #666; margin-top: 2px;">Display AI-calculated compatibility</small>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="showMatchPercentages" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-cogs"></i>
+                            <span>Learning Preferences</span>
+                            <small style="display: block; color: #666; margin-top: 2px;">Customize AI behavior</small>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h3 class="section-title"><i class="fas fa-bell" style="margin-right: 8px;"></i>Notifications</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>Push Notifications</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="pushNotifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-envelope"></i>
+                            <span>Email Notifications</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="emailNotifications" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-sms"></i>
+                            <span>SMS Notifications</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="smsNotifications">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-heart"></i>
+                            <span>New Match Alerts</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="matchAlerts" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h3 class="section-title"><i class="fas fa-palette" style="margin-right: 8px;"></i>App Preferences</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-moon"></i>
+                            <span>Dark Mode</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="darkMode" onchange="toggleDarkMode()">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-language"></i>
+                            <span>Language</span>
+                        </div>
+                        <select class="language-select" style="border: 1px solid #ddd; padding: 8px; border-radius: 8px; background: white;">
+                            <option value="en">English</option>
+                            <option value="ar">العربية</option>
+                            <option value="fr">Français</option>
+                        </select>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span>Location Services</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="location" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-sync"></i>
+                            <span>Auto-Sync Data</span>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="autoSync" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h3 class="section-title"><i class="fas fa-life-ring" style="margin-right: 8px;"></i>Support & Feedback</h3>
+                    <div class="setting-item" onclick="reportBug()">
+                        <div class="setting-info">
+                            <i class="fas fa-bug"></i>
+                            <span>Report a Bug</span>
+                            <small style="display: block; color: #666; margin-top: 2px;">Help us improve the app</small>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="setting-item" onclick="sendFeedback()">
+                        <div class="setting-info">
+                            <i class="fas fa-comment"></i>
+                            <span>Send Feedback</span>
+                            <small style="display: block; color: #666; margin-top: 2px;">Share your thoughts</small>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-question-circle"></i>
+                            <span>Help Center</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-info-circle"></i>
+                            <span>About WASLET</span>
+                        </div>
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h3 class="section-title"><i class="fas fa-rocket" style="margin-right: 8px; color: #FF9800;"></i>Future Development</h3>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-server"></i>
+                            <span>Full-Stack Server Hosting</span>
+                            <small style="display: block; color: #666; margin-top: 2px;">Enhanced performance & scalability</small>
+                        </div>
+                        <span class="coming-soon">Coming Soon</span>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-mobile-alt"></i>
+                            <span>Native Mobile App</span>
+                            <small style="display: block; color: #666; margin-top: 2px;">iOS & Android applications</small>
+                        </div>
+                        <span class="coming-soon">In Development</span>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-cloud"></i>
+                            <span>Cloud Synchronization</span>
+                            <small style="display: block; color: #666; margin-top: 2px;">Cross-device data sync</small>
+                        </div>
+                        <span class="coming-soon">Planned</span>
+                    </div>
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <i class="fas fa-video"></i>
+                            <span>Video Interviews</span>
+                            <small style="display: block; color: #666; margin-top: 2px;">Integrated video calling</small>
+                        </div>
+                        <span class="coming-soon">Q2 2024</span>
+                    </div>
+                </div>
+
+                <div class="profile-section developer-info" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px; padding: 20px; margin: 20px 0;">
+                    <h3 class="section-title" style="color: white; margin-bottom: 15px;"><i class="fas fa-code" style="margin-right: 8px;"></i>Developer Information</h3>
+                    <div class="developer-card" style="background: rgba(255,255,255,0.1); border-radius: 12px; padding: 20px; backdrop-filter: blur(10px);">
+                        <div style="display: flex; align-items: center; margin-bottom: 15px;">
+                            <div class="developer-avatar" style="width: 60px; height: 60px; background: rgba(255,255,255,0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 15px;">
+                                <i class="fas fa-user-circle" style="font-size: 40px; color: white;"></i>
+                            </div>
+                            <div>
+                                <h4 style="margin: 0; font-size: 20px; font-weight: 600;">Hiba Hashem</h4>
+                                <p style="margin: 5px 0 0 0; opacity: 0.9;">Lead Developer & UI/UX Designer</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-info" style="margin: 15px 0;">
+                            <div class="contact-item" style="display: flex; align-items: center; margin: 10px 0; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                                <i class="fas fa-phone" style="margin-right: 10px; width: 20px;"></i>
+                                <a href="tel:+96178810333" style="color: white; text-decoration: none;">+961 78 810 333</a>
+                            </div>
+                            <div class="contact-item" style="display: flex; align-items: center; margin: 10px 0; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                                <i class="fas fa-envelope" style="margin-right: 10px; width: 20px;"></i>
+                                <a href="mailto:hiba.hashem@waslet.com" style="color: white; text-decoration: none;">hiba.hashem@waslet.com</a>
+                            </div>
+                            <div class="contact-item" style="display: flex; align-items: center; margin: 10px 0; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                                <i class="fab fa-linkedin" style="margin-right: 10px; width: 20px;"></i>
+                                <a href="#" style="color: white; text-decoration: none;">LinkedIn Profile</a>
+                            </div>
+                            <div class="contact-item" style="display: flex; align-items: center; margin: 10px 0; padding: 8px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                                <i class="fab fa-github" style="margin-right: 10px; width: 20px;"></i>
+                                <a href="#" style="color: white; text-decoration: none;">GitHub Portfolio</a>
+                            </div>
+                        </div>
+                        
+                        <div class="developer-note" style="text-align: center; margin-top: 15px; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                            <p style="margin: 0; font-style: italic; opacity: 0.9;">"Connecting design dreams with innovative technology solutions."</p>
+                            <p style="margin: 10px 0 0 0; font-size: 12px; opacity: 0.7;">Crafted with ❤️ for the future of work</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="logout-section" style="margin-top: 30px; text-align: center;">
+                    <button class="btn" onclick="logout()" style="background: #f44336; color: white; padding: 12px 30px; border-radius: 25px; border: none; font-weight: 600; box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);">
+                        <i class="fas fa-sign-out-alt" style="margin-right: 8px;"></i>
+                        Sign Out
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Application State
+        let currentUser = null;
+        let applications = [];
+        let matches = [];
+        let currentScreen = 'welcome-screen';
+
+        // Sample Data
+        const sampleOpportunities = [
+            {
+                id: 1,
+                company: "DESIGN STUDIO X",
+                title: "Interior Designer",
+                type: "Full Time",
+                duration: "12 months",
+                salary: "$1,200-1,500",
+                location: "Beirut",
+                image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=400&h=200&fit=crop",
+                description: "We're seeking a creative and detail-oriented Interior Designer to join our dynamic team...",
+                tags: ["AutoCAD", "3D Modeling", "Project Management"],
+                requirements: [
+                    "Bachelor's degree in Interior Design or related field",
+                    "Proficiency in AutoCAD, SketchUp, and Adobe Creative Suite",
+                    "Strong portfolio showcasing residential and commercial projects"
+                ]
+            },
+            {
+                id: 2,
+                company: "CREATIVE SPACES",
+                title: "Junior Interior Designer Internship",
+                type: "Internship",
+                duration: "6 months",
+                salary: "Unpaid",
+                location: "Beirut",
+                image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=400&h=200&fit=crop",
+                description: "Join our award-winning team and gain hands-on experience in residential interior design...",
+                tags: ["SketchUp", "Photoshop", "Client Relations"]
+            }
+        ];
+
+        // Navigation Functions
+        function showScreen(screenId) {
+            // Hide all screens
+            const screens = document.querySelectorAll('.screen');
+            screens.forEach(screen => {
+                screen.classList.remove('active');
+            });
+
+            // Show target screen
+            const targetScreen = document.getElementById(screenId);
+            if (targetScreen) {
+                targetScreen.classList.add('active');
+                currentScreen = screenId;
+            }
+
+            // Update navigation active state
+            updateNavigationState(screenId);
+
+            // Add screen-specific logic
+            if (screenId === 'opportunities-screen') {
+                loadOpportunities();
+            }
+        }
+
+        function updateNavigationState(screenId) {
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => item.classList.remove('active'));
+
+            // Map screens to nav items
+            const screenNavMap = {
+                'opportunities-screen': 0,
+                'match-screen': 1,
+                'planner-screen': 2,
+                'profile-screen': 3,
+                'settings-screen': 4
+            };
+
+            const activeIndex = screenNavMap[screenId];
+            if (activeIndex !== undefined && navItems[activeIndex]) {
+                navItems[activeIndex].classList.add('active');
+            }
+        }
+
+        // Authentication Functions
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            // Simple validation (in real app, this would be server-side)
+            if (email && password) {
+                currentUser = {
+                    name: 'Nora',
+                    email: email,
+                    type: 'student'
+                };
+                
+                showToast('Login successful!');
+                setTimeout(() => {
+                    showScreen('opportunities-screen');
+                }, 1000);
+            } else {
+                showToast('Please fill in all fields', 'error');
+            }
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const dob = document.getElementById('dob').value;
+
+            if (name && email && password && dob) {
+                currentUser = {
+                    name: name,
+                    email: email,
+                    type: 'student',
+                    dob: dob
+                };
+                
+                showToast('Account created successfully!');
+                setTimeout(() => {
+                    showScreen('opportunities-screen');
+                }, 1000);
+            } else {
+                showToast('Please fill in all fields', 'error');
+            }
+        });
+
+        // Opportunity Functions
+        function loadOpportunities() {
+            // This would typically fetch from an API
+            console.log('Loading opportunities...');
+        }
+
+        function showOpportunityDetails(title) {
+            showScreen('details-screen');
+        }
+
+        function applyForJob() {
+            showToast('Application submitted successfully!');
+            applications.push({
+                id: Date.now(),
+                company: 'DESIGN STUDIO X',
+                position: 'Interior Designer',
+                status: 'pending',
+                appliedDate: new Date()
+            });
+            
+            setTimeout(() => {
+                showScreen('opportunities-screen');
+            }, 2000);
+        }
+
+        // Filter Functions
+        document.addEventListener('DOMContentLoaded', function() {
+            const filterTags = document.querySelectorAll('.filter-tag');
+            filterTags.forEach(tag => {
+                tag.addEventListener('click', function() {
+                    // Remove active class from all tags
+                    filterTags.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tag
+                    this.classList.add('active');
+                    
+                    // Filter opportunities (in real app, this would filter the displayed items)
+                    const filterType = this.textContent;
+                    console.log('Filtering by:', filterType);
+                });
+            });
+        });
+
+        // Search Function
+        document.addEventListener('DOMContentLoaded', function() {
+            const searchInput = document.querySelector('.search-input');
+            const searchBtn = document.querySelector('.search-btn');
+            
+            if (searchInput && searchBtn) {
+                searchBtn.addEventListener('click', function() {
+                    const query = searchInput.value;
+                    if (query.trim()) {
+                        console.log('Searching for:', query);
+                        showToast(`Searching for "${query}"...`);
+                    }
+                });
+
+                searchInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        searchBtn.click();
+                    }
+                });
+            }
+        });
+
+        // Utility Functions
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            
+            if (type === 'error') {
+                toast.style.background = '#f44336';
+            }
+            
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.remove();
+            }, 3000);
+        }
+
+        function toggleDarkMode() {
+            const isDark = document.getElementById('darkMode').checked;
+            if (isDark) {
+                document.body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)';
+                document.querySelector('.container').style.background = '#2c3e50';
+                document.documentElement.style.setProperty('--primary-color', '#E91E63');
+                document.documentElement.style.setProperty('--secondary-color', '#9C27B0');
+            } else {
+                document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+                document.querySelector('.container').style.background = 'white';
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            applications = [];
+            matches = [];
+            showToast('Signed out successfully');
+            setTimeout(() => {
+                showScreen('welcome-screen');
+            }, 1000);
+        }
+
+        // Animation Observers
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animation = 'fadeIn 0.6s ease-out forwards';
+                }
+            });
+        }, observerOptions);
+
+        // Observe elements for animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const animateElements = document.querySelectorAll('.opportunity-card, .profile-section, .match-company');
+            animateElements.forEach(el => observer.observe(el));
+        });
+
+        // Touch and Swipe Gestures
+        let touchStartX = 0;
+        let touchEndX = 0;
+
+        document.addEventListener('touchstart', function(e) {
+            touchStartX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', function(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            const swipeThreshold = 50;
+            const diff = touchStartX - touchEndX;
+            
+            if (Math.abs(diff) > swipeThreshold) {
+                if (diff > 0) {
+                    // Swipe left - next screen
+                    console.log('Swiped left');
+                } else {
+                    // Swipe right - previous screen
+                    console.log('Swiped right');
+                }
+            }
+        }
+
+        // Performance Optimization
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('WASLET App Initialized');
+            
+            // Set initial screen
+            showScreen('welcome-screen');
+            
+            // Initialize event listeners
+            setupEventListeners();
+        });
+
+        function setupEventListeners() {
+            // Add any additional event listeners here
+            console.log('Event listeners setup complete');
+        }
+
+        // Settings Functions
+        function reportBug() {
+            const bugReport = prompt('Please describe the bug you encountered:');
+            if (bugReport && bugReport.trim()) {
+                // In a real app, this would send to a bug tracking system
+                showToast('Bug report submitted successfully! Thank you for helping us improve WASLET.');
+                console.log('Bug Report:', {
+                    description: bugReport,
+                    timestamp: new Date().toISOString(),
+                    userAgent: navigator.userAgent,
+                    url: window.location.href
+                });
+            }
+        }
+
+        function sendFeedback() {
+            const feedback = prompt('We\'d love to hear your feedback about WASLET:');
+            if (feedback && feedback.trim()) {
+                // In a real app, this would send to a feedback system
+                showToast('Thank you for your feedback! We appreciate your input.');
+                console.log('User Feedback:', {
+                    message: feedback,
+                    timestamp: new Date().toISOString(),
+                    userId: currentUser ? currentUser.email : 'anonymous'
+                });
+            }
+        }
+
+        function openFutureWork() {
+            const futureWorkInfo = `
+🚀 WASLET Future Roadmap:
+
+• Full-stack server deployment
+• Real-time chat with companies
+• Advanced AI matching algorithms
+• Portfolio integration
+• Video interview scheduling
+• Mobile app for iOS/Android
+• Company dashboard
+• Analytics and insights
+
+Stay tuned for these exciting features!`;
+            alert(futureWorkInfo);
+        }
+
+        // Enhanced AI Matching Functions
+        function calculateAIMatch(userProfile, jobRequirements) {
+            // Simulate AI matching algorithm
+            const factors = {
+                skills: Math.random() * 30 + 60, // 60-90%
+                experience: Math.random() * 25 + 65, // 65-90%
+                location: Math.random() * 20 + 70, // 70-90%
+                education: Math.random() * 15 + 75, // 75-90%
+                interests: Math.random() * 10 + 80 // 80-90%
+            };
+            
+            const weightedScore = (
+                factors.skills * 0.3 +
+                factors.experience * 0.25 +
+                factors.location * 0.2 +
+                factors.education * 0.15 +
+                factors.interests * 0.1
+            );
+            
+            return Math.round(weightedScore);
+        }
+
+        function updateMatchPercentages() {
+            const matchElements = document.querySelectorAll('.match-percentage');
+            matchElements.forEach(element => {
+                const percentage = calculateAIMatch(currentUser, {});
+                element.textContent = `${percentage}% Match`;
+                
+                // Update color based on match percentage
+                if (percentage >= 85) {
+                    element.style.background = 'var(--success-color)';
+                } else if (percentage >= 70) {
+                    element.style.background = 'var(--warning-color)';
+                } else {
+                    element.style.background = '#ff5722';
+                }
+            });
+        }
+
+        function showAIInsights(percentage) {
+            let insights = [];
+            
+            if (percentage >= 90) {
+                insights = [
+                    '🎯 Perfect match for your skills',
+                    '📍 Ideal location preference',
+                    '💼 Excellent career growth opportunity'
+                ];
+            } else if (percentage >= 80) {
+                insights = [
+                    '✅ Strong skill alignment',
+                    '🌟 Good cultural fit',
+                    '📈 Potential for skill development'
+                ];
+            } else if (percentage >= 70) {
+                insights = [
+                    '🔄 Some skill gaps to bridge',
+                    '📚 Learning opportunities available',
+                    '🎯 Partial match with requirements'
+                ];
+            } else {
+                insights = [
+                    '📖 Significant learning curve',
+                    '🚀 Great for career pivot',
+                    '💡 Opportunity to expand skillset'
+                ];
+            }
+            
+            return insights;
+        }
+
+        // Auto-update match percentages when opportunities screen is shown
+        const originalShowScreen = showScreen;
+        showScreen = function(screenId) {
+            originalShowScreen(screenId);
+            if (screenId === 'opportunities-screen') {
+                setTimeout(updateMatchPercentages, 500);
+            }
+        };
+    </script>
+
+    <style>
+        /* Toggle Switch Styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Enhanced Settings Screen Styles */
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .setting-item:hover {
+            background-color: rgba(0, 0, 0, 0.02);
+            padding-left: 10px;
+            padding-right: 10px;
+            border-radius: 8px;
+            margin: 0 -10px;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .setting-info i {
+            margin-right: 12px;
+            width: 20px;
+            color: var(--primary-color);
+            font-size: 16px;
+        }
+
+        .setting-info span {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .setting-info small {
+            font-size: 12px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .coming-soon {
+            background: linear-gradient(135deg, #FF9800, #FF5722);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .language-select {
+            border: 1px solid #ddd;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: white;
+            color: #333;
+            font-size: 14px;
+            min-width: 120px;
+        }
+
+        .language-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(233, 30, 99, 0.1);
+        }
+
+        .developer-info {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+
+        .developer-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .contact-item a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .contact-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .developer-note {
+            text-align: center;
+            margin-top: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-section {
+            margin-bottom: 25px;
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            border: 1px solid #f0f0f0;
+        }
+
+        .logout-section {
+            margin-top: 30px;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .logout-section .btn {
+            background: #f44336;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 25px;
+            border: none;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
+            transition: all 0.3s ease;
+        }
+
+        .logout-section .btn:hover {
+            background: #d32f2f;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(244, 67, 54, 0.4);
+        }
+
+        /* Additional Mobile Optimizations */
+        @media (max-width: 430px) {
+            .opportunities-header {
+                margin: -20px -20px 20px -20px;
+                border-radius: 0;
+            }
+            
+            .profile-header {
+                margin: -20px -20px 30px -20px;
+                border-radius: 0 0 30px 30px;
+                
+            }
+            
+            .bottom-nav {
+                left: 0;
+                transform: none;
+            }
+        }
+
+        /* Loading States */
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+        }
+
+        @keyframes loading {
+            0% {
+                background-position: 200% 0;
+            }
+            100% {
+                background-position: -200% 0;
+            }
+        }
+
+        /* Micro-interactions */
+        .opportunity-card {
+            transform-origin: center;
+        }
+
+        .opportunity-card:active {
+            transform: scale(0.98);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .nav-item:active {
+            transform: scale(0.9);
+        }
+
+        /* Accessibility Improvements */
+        .btn:focus, .form-control:focus {
+            outline: 2px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+
+        /* High contrast mode support */
+        @media (prefers-contrast: high) {
+            .opportunity-card {
+                border: 2px solid #000;
+            }
+            
+            .btn {
+                border: 2px solid currentColor;
+            }
+        }
+    </style>
+</body>
+</html>
