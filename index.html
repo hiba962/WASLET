@@ -7,12 +7,12 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #E91E63;
+            --primary-color: #fd4381;
             --secondary-color: #9C27B0;
             --accent-color: #00BCD4;
             --warning-color: #FF9800;
             --success-color: #4CAF50;
-            --background-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --background-gradient: linear-gradient(135deg, #2b2f3d 0%, #764ba2 100%);
             --card-shadow: 0 10px 30px rgba(0,0,0,0.1);
             --border-radius: 20px;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -234,6 +234,8 @@
             transition: var(--transition);
             box-shadow: var(--card-shadow);
             margin-top: 40px;
+            z-index: 10000;
+            position: relative;
         }
 
         .get-started-btn:hover {
@@ -1392,8 +1394,8 @@
         <!-- Profile Screen -->
         <div class="screen" id="profile-screen">
             <div class="profile-header">
-                <img src="https://media.istockphoto.com/id/1398385367/photo/happy-millennial-business-woman-in-glasses-posing-with-hands-folded.jpg?s=612x612&w=0&k=20&c=Wd2vTDd6tJ5SeEY-aw0WL0bew8TAkyUGVvNQRj3oJFw=">
-                <h2 class="profile-name">NORA</h2>
+                <img src="hibz.jpg" style = "width: 50vh;">
+                <h2 class="profile-name">HIBA</h2>
                 <div class="profile-badge">Undergraduate Interior Design</div>
                 <div class="profile-actions">
                     <button class="profile-btn">EDIT</button>
@@ -1419,7 +1421,7 @@
 
             <div class="profile-section">
                 <h3 class="section-title">About</h3>
-                <p>Hi, I am an undergraduate Interior Design student at the American University of Beirut (AUB), with extensive Comprehensive Interior (AI) and Design expertise in both residential and commercial projects. I have developed strong skills in space planning, concept development, and design communication through my academic background includes coursework in Interior Design Studio, Furniture & Finishes, Lighting Design.</p>
+                <p>Hi, I am an undergraduate Interior Design student at the American University of Science and Technology (AUST), with extensive Comprehensive Interior (AI) and Design expertise in both residential and commercial projects. I have developed strong skills in space planning, concept development, and design communication through my academic background includes coursework in Interior Design Studio, Furniture & Finishes, Lighting Design.</p>
             </div>
 
             <div class="profile-section">
@@ -2104,6 +2106,14 @@
                 currentScreen = screenId;
             }
 
+            // Toggle navigation bar visibility
+            const bottomNav = document.querySelector('.bottom-nav');
+            if (screenId === 'login-screen' || screenId === 'welcome-screen') {
+                bottomNav.style.display = 'none';
+            } else {
+                bottomNav.style.display = 'flex';
+            }
+
             // Update navigation active state
             updateNavigationState(screenId);
 
@@ -2271,6 +2281,30 @@
                 document.body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
                 document.querySelector('.container').style.background = 'white';
             }
+            const body = document.body;
+    const currentTheme = body.getAttribute('data-theme') || 'light';
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    const themeIcon = document.getElementById('theme-icon');
+
+    // Apply new theme
+    body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+
+    // Update theme icon
+    themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+
+    // Optional: update background + container manually if not using CSS
+    if (newTheme === 'dark') {
+        body.style.background = 'linear-gradient(135deg, #2c3e50 0%, #34495e 100%)';
+        document.querySelector('.container').style.background = '#2c3e50';
+        document.documentElement.style.setProperty('--primary-color', '#E91E63');
+        document.documentElement.style.setProperty('--secondary-color', '#9C27B0');
+    } else {
+        body.style.background = 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)';
+        document.querySelector('.container').style.background = 'white';
+        document.documentElement.style.setProperty('--primary-color', '#3F51B5');
+        document.documentElement.style.setProperty('--secondary-color', '#2196F3');
+    }
         }
 
         function logout() {
@@ -2484,6 +2518,58 @@ Stay tuned for these exciting features!`;
                 setTimeout(updateMatchPercentages, 500);
             }
         };
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load saved theme
+            const savedTheme = localStorage.getItem('theme') || 'light';
+            document.body.setAttribute('data-theme', savedTheme);
+            
+            // Update theme toggle icon
+            const themeIcon = document.querySelector('.theme-toggle i');
+            if (themeIcon) {
+                themeIcon.className = savedTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+            }
+            
+            // Set up form event listeners
+            const loginForm = document.getElementById('loginForm');
+            if (loginForm) {
+                loginForm.addEventListener('submit', handleLogin);
+            }
+            
+            const signupForm = document.getElementById('signupForm');
+            if (signupForm) {
+                signupForm.addEventListener('submit', handleSignup);
+            }
+            
+            // Set up search functionality
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                searchInput.addEventListener('input', searchOpportunities);
+            }
+            
+            // Ensure get started button works
+            const getStartedBtn = document.querySelector('.get-started-btn');
+            if (getStartedBtn) {
+                getStartedBtn.addEventListener('click', function() {
+                    showScreen('login-screen');
+                });
+            }
+        });
+
+        function toggleTheme() {
+    const currentTheme = document.body.getAttribute('data-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    
+    document.body.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    
+    const themeIcon = document.querySelector('.theme-toggle i');
+    if (themeIcon) {
+        themeIcon.className = newTheme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+    }
+}
+
     </script>
 
     <style>
